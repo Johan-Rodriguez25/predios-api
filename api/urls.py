@@ -1,9 +1,19 @@
 from django.urls import path
-from .views import PropietarioView, PredioView
+from rest_framework import routers
+from rest_framework.urlpatterns import format_suffix_patterns
+from .views import api_root, PropietarioList, PropietarioDetail, PredioList, PredioCreate, PredioDetail
 
 urlpatterns=[
-  path('propietarios/', PropietarioView.as_view(), name='propietarios_list'),
-  path('propietarios/<int:id>', PropietarioView.as_view(), name='propietarios_process'),
-  path('predios/', PredioView.as_view(), name='predios_list'),
-  path('predios/<int:id>', PredioView.as_view(), name='predios_process'),
+  # path('propietarios/', PropietarioList.as_view()),
+  # path('propietarios/<int:pk>/', PropietarioDetail.as_view()),
+  # path('predios/', PredioList.as_view()),
+  # path('predios/<int:pk>/', PredioDetail.as_view()),
+  path('', api_root),
+  path('propietarios/', PropietarioList.as_view(), name='propietario-list'),
+  path('propietarios/<int:pk>/', PropietarioDetail.as_view(), name='propietario-detail'),
+  path('predios/', PredioList.as_view(), name='predio-list'),
+  path('predios/', PredioCreate.as_view(), name='predio-create'),
+  path('predios/<int:pk>/', PredioDetail.as_view(), name='predio-detail'),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

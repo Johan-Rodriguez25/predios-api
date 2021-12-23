@@ -1,146 +1,66 @@
-import json
-from django.http.response import JsonResponse
-from django.urls.base import clear_script_prefix
-from django.utils.decorators import method_decorator
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics, mixins
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from .models import Propietario, Predio
+from .serializers import PropietarioSerializer, PredioSerializer
 
-# Create your views here.
+@api_view(['GET'])
+def api_root(request, format=None):
+  return Response({
+    'propietarios': reverse('propietario-list', request=request, format=format),
+    'predios': reverse('predio-list', request=request, format=format)
+  })
 
-# Vista de Propietario
+class PropietarioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  queryset = Propietario.objects.all()
+  serializer_class = PropietarioSerializer
 
-class PropietarioView(View):
+  def get(self, request, *args, **kwargs):
+    return self.list(request, *args, **kwargs)
 
-  @method_decorator(csrf_exempt)
-  def dispatch(self, request, *args, **kwargs):
-      return super().dispatch(request, *args, **kwargs)
+  def post(self, request, *args, **kwargs):
+    return self.create(request, *args, **kwargs)
 
-  def get(self, request, id=0):
-    if(id>0):
-      propietarios=list(Propietario.objects.filter(id=id).values())
+class PropietarioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+  queryset = Propietario.objects.all()
+  serializer_class = PropietarioSerializer
 
-      if len(propietarios)>0:
-        propietario=propietarios[0]
-        datos={'message': "Success", 'propietario': propietario}
+  def get(self, request, *args, **kwargs):
+    return self.retrieve(request, *args, **kwargs)
 
-      else:
-        datos={'message': "Propietario not found..."}
+  def put(self, request, *args, **kwargs):
+    return self.update(request, *args, **kwargs)
 
-      return JsonResponse(datos)
+  def delete(self, request, *args, **kwargs):
+    return self.destroy(request, *args, **kwargs)
 
-    else:
-      propietarios=list(Propietario.objects.values())
+class PredioList(generics.ListAPIView):
+  queryset = Predio.objects.all()
+  serializer_class = PredioSerializer
+  filter_backends = [DjangoFilterBackend, SearchFilter]
+  # filterset_fields = ['name']
+  # 'propietarios__name', 'propietarios__identificacion', 'cedula_catastral', 'direccion', 
+  search_fields = ['$propietarios__name', '$propietarios__identificacion', '$cedula_catastral', '$direccion', '$name', 'type_predio']
 
-      if len(propietarios)>0:
-        datos={'message': "Success", 'propietarios': propietarios}
-        
-      else:
-        datos={'message': "Propietarios not found..."}
+class PredioCreate(mixins.CreateModelMixin, generics.GenericAPIView):
+  queryset = Predio.objects.all()
+  serializer_class = PredioSerializer
 
-      return JsonResponse(datos)
+  def post(self, request, *args, **kwargs):
+    return self.create(request, *args, **kwargs)
 
-  def post(self, request):
-    jd=json.loads(request.body)
-    Propietario.objects.create(name=jd['name'], identificacion=jd['identificacion'])
-    datos={'message': 'Success'}
+class PredioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+  queryset = Predio.objects.all()
+  serializer_class = PredioSerializer
 
-    return JsonResponse(datos)
+  def get(self, request, *args, **kwargs):
+    return self.retrieve(request, *args, **kwargs)
 
-  def put(self, request, id):
-    jd=json.loads(request.body)
-    propietarios=list(Propietario.objects.filter(id=id).values())
+  def put(self, request, *args, **kwargs):
+    return self.update(request, *args, **kwargs)
 
-    if len(propietarios)>0:
-      propietario=Propietario.objects.get(id=id)
-      propietario.name=jd['name']
-      propietario.identificacion=jd['identificacion']
-      propietario.save()
-      datos={'message': 'Success'}
-
-    else:
-        datos={'message': "Propietario not found..."}
-
-    return JsonResponse(datos)
-
-  def delete(self, request, id):
-    propietarios = list(Propietario.objects.filter(id=id).values())
-
-    if len(propietarios)>0:
-      Propietario.objects.filter(id=id).delete()
-      datos={'message': 'Success'}
-    
-    else:
-      datos={'message': "Propietario not found..."}
-
-    return JsonResponse(datos)
-
-# Vista de Predio
-
-class PredioView(View):
-
-  @method_decorator(csrf_exempt)
-  def dispatch(self, request, *args, **kwargs):
-      return super().dispatch(request, *args, **kwargs)
-
-  def get(self, request, id=0):
-    if(id>0):
-      predios=list(Predio.objects.filter(id=id).values())
-
-      if len(predios)>0:
-        predio=predios[0]
-        datos={'message': "Success", 'predio': predio}
-
-      else:
-        datos={'message': "Predio not found..."}
-
-      return JsonResponse(datos)
-
-    else:
-      predios=list(Predio.objects.values())
-
-      if len(predios)>0:
-        datos={'message': "Success", 'predios': predios}
-        
-      else:
-        datos={'message': "Predios not found..."}
-
-      return JsonResponse(datos)
-
-  def post(self, request):
-    jd=json.loads(request.body)
-    Predio.objects.create(name=jd['name'], predio=jd['predio'], matricula_inmobiliaria=jd['matricula_inmobiliaria'], cedula_catastral=jd['cedula_catastral'], propietarios=jd['propietarios'])
-    datos={'message': 'Success'}
-
-    return JsonResponse(datos)
-
-  def put(self, request, id):
-    jd=json.loads(request.body)
-    predios=list(Predio.objects.filter(id=id).values())
-
-    if len(predios)>0:
-      predio=Predio.objects.get(id=id)
-      predio.name=jd['name']
-      predio.predio=jd['predio']
-      predio.matricula_inmobiliaria=jd['matricula_inmobiliaria']
-      predio.cedula_catastral=jd['cedula_catastral']
-      predio.propietarios=jd['propietarios']
-      predio.save()
-      datos={'message': 'Success'}
-
-    else:
-        datos={'message': "Predio not found..."}
-
-    return JsonResponse(datos)
-
-  def delete(self, request, id):
-    predios = list(Predio.objects.filter(id=id).values())
-
-    if len(predios)>0:
-      Predio.objects.filter(id=id).delete()
-      datos={'message': 'Success'}
-    
-    else:
-      datos={'message': "Predio not found..."}
-
-    return JsonResponse(datos)
+  def delete(self, request, *args, **kwargs):
+    return self.destroy(request, *args, **kwargs)
