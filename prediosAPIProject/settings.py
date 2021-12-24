@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ_Env()
+
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,11 +88,11 @@ WSGI_APPLICATION = 'prediosAPIProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'prediosApp',
-        'USER': 'postgres',
-        'PASSWORD': 'johansSwq213454*',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': 'os.environ.get("DATABASE_NAME")',
+        'DATABASE_USER': 'os.environ.get("DATABASE_USER")',
+        'PASSWORD': 'os.environ.get("DATABASE_PASSWORD")',
+        'HOST': 'os.environ.get("DATABASE_HOST")',
+        'PORT': 'os.environ.get("DATABASE_PORT")',
     }
 }
 
@@ -141,3 +146,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
