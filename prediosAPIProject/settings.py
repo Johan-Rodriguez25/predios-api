@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import django_heroku
+
 from pathlib import Path
 import os
 
@@ -84,10 +86,10 @@ WSGI_APPLICATION = 'prediosAPIProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "ocjvdpap",
-        'DATABASE_USER': "ocjvdpap",
-        'PASSWORD': "vAzV-umsqXUarDJGu8iJeqf3P83AyT-M",
-        'HOST': 'castor.db.elephantsql.com',
+        'NAME': "d2mlemr7bip7s6",
+        'USER': "giojhoneuqjodk",
+        'PASSWORD': "79bf97b6670deb100559fc0ef5608903e34de0ea86187fc3e836a2d188871e1d",
+        'HOST': 'ec2-50-19-160-40.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -127,7 +129,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+django_heroku.settings(locals())
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
