@@ -88,11 +88,11 @@ WSGI_APPLICATION = 'prediosAPIProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'os.environ.get("DATABASE_NAME")',
-        'DATABASE_USER': 'os.environ.get("DATABASE_USER")',
-        'PASSWORD': 'os.environ.get("DATABASE_PASSWORD")',
-        'HOST': 'os.environ.get("DATABASE_HOST")',
-        'PORT': 'os.environ.get("DATABASE_PORT")',
+        'NAME': env("DATABASE_NAME"),
+        'DATABASE_USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': env("DATABASE_HOST"),
+        'PORT': env("DATABASE_PORT"),
     }
 }
 
