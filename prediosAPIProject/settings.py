@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-asx96yw9jhrrd41s@=sa%j8h0r8x-*dz9l=-ai2jah^v++!f8&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'jsrodriguez25.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'prediosAPIProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "prediosApp",
-        'DATABASE_USER': "postgres",
-        'PASSWORD': "johansSwq213454*",
-        'HOST': 'db',
+        'NAME': "ocjvdpap",
+        'DATABASE_USER': "ocjvdpap",
+        'PASSWORD': "vAzV-umsqXUarDJGu8iJeqf3P83AyT-M",
+        'HOST': 'castor.db.elephantsql.com',
         'PORT': '5432',
     }
 }
@@ -128,7 +128,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
