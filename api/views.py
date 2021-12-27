@@ -37,17 +37,12 @@ class PropietarioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixi
   def delete(self, request, *args, **kwargs):
     return self.destroy(request, *args, **kwargs)
 
-class PredioList(generics.ListAPIView):
+class PredioList(mixins.CreateModelMixin, generics.ListAPIView):
   queryset = Predio.objects.all()
   serializer_class = PredioSerializer
   filter_backends = [DjangoFilterBackend, SearchFilter]
   filterset_fields = ['propietarios__name', 'propietarios__identificacion', 'cedula_catastral', 'direccion', 'name']
-  # search_fields = ['$propietarios__name', '$propietarios__identificacion', '$cedula_catastral', '$direccion', '$name', 'type_predio']
-
-class PredioCreate(mixins.CreateModelMixin, generics.GenericAPIView):
-  queryset = Predio.objects.all()
-  serializer_class = PredioSerializer
-
+  
   def post(self, request, *args, **kwargs):
     return self.create(request, *args, **kwargs)
 

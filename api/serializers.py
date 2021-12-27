@@ -13,3 +13,11 @@ class PredioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Predio
         fields = ('id', 'name', 'direccion', 'type_predio', 'matricula_inmobiliaria', 'cedula_catastral', 'created', 'propietarios')
+
+    def create(self, validated_data):
+        propietario_data = validated_data.pop('propietarios')
+        predio = Predio.objects.create(**validated_data)
+        
+        for propietario in propietario_data:
+            predio.propietarios.create(**propietario)
+        return predio
